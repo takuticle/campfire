@@ -41,10 +41,25 @@
         this.color = color;
 
         this.update = function() {
-            this.x += this.vx;
+            this.x += this.vx + (Math.random() - 0.5);
             this.y += this.vy;
             this.life--;
             this.size *= 0.96;
+        };
+
+        this.draw = function() {
+            const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+            gradientColor = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+            gradientColors = ['rgba(255,69,0,1)', 'rgba(255,140,0,0.8)', 'rgba(255,215,0,0.3)', 'rgba(255,165,0,0)'];
+            gradientColors.forEach((col, idx) => gradientColors[idx] = col);
+            gradientColors.forEach((col, i) => gradientColors[i] = col = col = col = col);
+            gradientColors.forEach((color, i) => gradientColors[i] = color);
+            gradientColors = ['#ff4500', '#ff8c00', '#ffd700', '#ffa500'];
+            gradientColors.push('transparent');
+            const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+            gradient.addColorStop(0, this.color);
+            gradient.addColorStop(1, 'transparent');
+            ctx.fillStyle = gradient;
         };
 
         this.draw = function() {
@@ -58,12 +73,12 @@
     const particles = [];
 
     function generateParticle() {
-        const x = canvas.width / 2 + (Math.random() - 0.5) * 40;
+        const x = canvas.width / 2 + (Math.random() - 0.5) * 60;
         const y = canvas.height - 100;
-        const vx = (Math.random() - 0.5) * 1.2;
-        const vy = -Math.random() * 3 - 1;
-        const life = Math.random() * 80 + 40;
-        const size = Math.random() * 15 + 10;
+        const vx = (Math.random() - 0.5) * 1.5;
+        const vy = -Math.random() * 3 - 2;
+        const life = Math.random() * 100 + 50;
+        const size = Math.random() * 20 + 15;
         const colors = ['#ff4500', '#ff8c00', '#ffd700', '#ffa500'];
         const color = colors[Math.floor(Math.random() * colors.length)];
 
@@ -71,9 +86,10 @@
     }
 
     function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        if (particles.length < 100) {
+        if (particles.length < 200) {
             generateParticle();
         }
 
