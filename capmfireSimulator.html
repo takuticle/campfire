@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>焚き火シミュレーター</title>
+    <style>
+        body {
+            background-color: #000;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+<canvas id="fire"></canvas>
+
+<script>
+    const canvas = document.getElementById('fire');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+
+    function Particle(x, y, vx, vy, life, size, color) {
+        this.x = x;
+        this.y = y;
+        this.vx = vx;
+        this.vy = vy;
+        this.life = life;
+        this.size = size;
+        this.color = color;
+
+        this.update = function() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.life--;
+            this.size *= 0.96;
+        };
+
+        this.draw = function() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        };
+    }
+
+    const particles = [];
+
+    function generateParticle() {
+        const x = canvas.width / 2 + (Math.random() - 0.5) * 40;
+        const y = canvas.height - 100;
+        const vx = (Math.random() - 0.5) * 1.2;
+        const vy = -Math.random() * 3 - 1;
+        const life = Math.random() * 80 + 40;
+        const size = Math.random() * 15 + 10;
+        const colors = ['#ff4500', '#ff8c00', '#ffd700', '#ffa500'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+
+        particles.push(new Particle(x, y, vx, vy, life, size, color));
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (particles.length < 100) {
+            generateParticle();
+        }
+
+        particles.forEach((particle, index) => {
+            particle.update();
+            particle.draw();
+
+            if (particle.life <= 0 || particle.size <= 0.5) {
+                particles.splice(index, 1);
+            }
+        });
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+</script>
+</body>
+</html>
